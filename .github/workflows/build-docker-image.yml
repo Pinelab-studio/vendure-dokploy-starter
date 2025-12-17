@@ -1,5 +1,3 @@
-name: CI/CD â React.js Application with Docker
-
 on:
   push:
     branches: [main]
