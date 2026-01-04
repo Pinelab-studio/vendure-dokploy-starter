@@ -1,9 +1,8 @@
-FROM node:22
+FROM node:24-slim
 
 WORKDIR /usr/src/app
 
-COPY package.json ./
-COPY package-lock.json ./
-RUN npm install --production
+COPY package.json package-lock.json ./
+RUN npm ci --production
 COPY . .
 RUN npm run build

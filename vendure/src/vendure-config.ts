@@ -12,7 +12,7 @@ import { BullMQJobQueuePlugin } from '@vendure/job-queue-plugin/package/bullmq';
 import 'dotenv/config';
 import path from 'path';
 
-const IS_DEV = process.env.APP_ENV === 'dev';
+const IS_LOCAL = process.env.APP_ENV === 'local';
 const serverPort = +process.env.PORT || 3000;
 
 export const config: VendureConfig = {
@@ -20,11 +20,11 @@ export const config: VendureConfig = {
         port: serverPort,
         adminApiPath: 'admin-api',
         shopApiPath: 'shop-api',
-        trustProxy: IS_DEV ? false : 1,
+        trustProxy: IS_LOCAL ? false : 1,
         // The following options are useful in development mode,
         // but are best turned off for production for security
         // reasons.
-        ...(IS_DEV ? {
+        ...(IS_LOCAL ? {
             adminApiDebug: true,
             shopApiDebug: true,
         } : {}),
@@ -71,11 +71,11 @@ export const config: VendureConfig = {
         GraphiqlPlugin.init(),
         AssetServerPlugin.init({
             route: 'assets',
-            assetUploadDir: path.join(__dirname, '../static/assets'),
+            assetUploadDir: IS_LOCAL ? path.join(__dirname, '../static/assets') : '/usr/src/app/assets',
             // For local dev, the correct value for assetUrlPrefix should
             // be guessed correctly, but for production it will usually need
             // to be set manually to match your production url.
-            assetUrlPrefix: IS_DEV ? undefined : 'https://www.my-shop.com/assets/',
+            assetUrlPrefix: `https://${process.env.VENDURE_HOST}/assets/`,
         }),
         DefaultSchedulerPlugin.init(),
         DefaultSearchPlugin.init({ bufferUpdates: false, indexStockStatus: true }),
