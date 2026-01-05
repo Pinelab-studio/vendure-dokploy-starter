@@ -1,12 +1,12 @@
+import { AssetServerPlugin } from '@vendure/asset-server-plugin';
 import {
-    dummyPaymentHandler,
     DefaultSchedulerPlugin,
     DefaultSearchPlugin,
-    VendureConfig,
+    dummyPaymentHandler,
+    VendureConfig
 } from '@vendure/core';
-import { defaultEmailHandlers, EmailPlugin, FileBasedTemplateLoader } from '@vendure/email-plugin';
-import { AssetServerPlugin } from '@vendure/asset-server-plugin';
 import { DashboardPlugin } from '@vendure/dashboard/plugin';
+import { defaultEmailHandlers, EmailPlugin, FileBasedTemplateLoader } from '@vendure/email-plugin';
 import { GraphiqlPlugin } from '@vendure/graphiql-plugin';
 import { BullMQJobQueuePlugin } from '@vendure/job-queue-plugin/package/bullmq';
 import 'dotenv/config';

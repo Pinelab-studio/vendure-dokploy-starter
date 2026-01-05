@@ -8,47 +8,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout source code
+      # Checkout source code
       - name: Checkout source code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Fetches full history for better caching/context
 
-      # 2. Set up Docker Buildx
+      # Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 3. Cache Docker layers
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-buildx-
-
-      # 4. Cache npm dependencies
-      - name: Cache npm dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('./vendure/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-npm-
-
-      # 5. Extract metadata
+      # Extract metadata
       - name: Extract metadata
         id: meta
         run: |
           echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_OUTPUT"
           echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
-      # 8. Login to Docker Hub
+      # Login to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 9. Build and push prod image
+      # Build and push prod image
       - name: Build and push production image
         uses: docker/build-push-action@v6
         with:
@@ -61,7 +45,12 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/dokploy-vendure-demo:${{ steps.meta.outputs.SHORT_SHA }}
           cache-from: type=local,src=/tmp/.buildx-cache
 
-      # 10. Trigger Dokploy deployment webhook
-      - name: Trigger Dokploy deployment
+      # Trigger Dokploy deployment webhook
+      - name: Trigger Dokploy deployment for Vendure API
         run: |
-          curl -f -X POST "${{ secrets.DOKPLOY_DEPLOY_WEBHOOK }}"
+          curl -f -X POST "${{ secrets.DEPLOY_WEBHOOK_VENDURE_API }}"
+
+      # Trigger Dokploy deployment webhook
+      - name: Trigger Dokploy deployment for Vendure Worker
+        run: |
+          curl -f -X POST "${{ secrets.DEPLOY_WEBHOOK_VENDURE_WORKER }}"
