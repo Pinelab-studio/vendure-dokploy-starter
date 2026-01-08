@@ -1,0 +1,183 @@
+config:
+  target: "https://vendure.demo.pinelab.app"
+  plugins:
+    ensure:
+      thresholds:
+        - http.response_time.p95: 500
+  phases:
+    - duration: 30 # Total duration of the load test
+      arrivalRate: 4 # Number of new users arriving every second
+      name: "Load Test"
+
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+  variables:
+    productSlug: "test"
+
+scenarios:
+  - name: "Vendure product to checkout flow"
+    flow:
+
+      #
+      # 1. Fetch product by slug with variants
+      #
+      - post:
+          url: "/shop-api"
+          json:
+            query: |
+              query GetProductBySlug($slug: String!) {
+                product(slug: $slug) {
+                  id
+                  name
+                  slug
+                  featuredAsset {
+                    id
+                    preview
+                    source
+                  }
+                  variants {
+                    id
+                    name
+                    sku
+                    price
+                    priceWithTax
+                    featuredAsset {
+                      id
+                      preview
+                      source
+                    }
+                  }
+                }
+              }
+            variables:
+              slug: "{{ productSlug }}"
+          capture:
+            - json: "$.data.product.variants[0].id"
+              as: "variantId"
+            - json: "$.data.product.featuredAsset.preview"
+              as: "assetPath"
+
+      #
+      # 2. Fetch the asset based on product query result
+      #
+      # - get:
+      #     url: "{{ assetPath }}"
+
+      #
+      # 3. Add first variant to order
+      #
+      - post:
+          url: "/shop-api"
+          json:
+            query: |
+              mutation AddItemToOrder($variantId: ID!, $qty: Int!) {
+                addItemToOrder(productVariantId: $variantId, quantity: $qty) {
+                  __typename
+                  ... on Order {
+                    id
+                    totalQuantity
+                    code
+                  }
+                  ... on ErrorResult {
+                    errorCode
+                    message
+                  }
+                }
+              }
+            variables:
+              variantId: "{{ variantId }}"
+              qty: 1
+          capture:
+            - json: "$.data.addItemToOrder.id"
+              as: "orderId"
+
+      #
+      # 4. Set shipping address
+      #
+      - post:
+          url: "/shop-api"
+          json:
+            query: |
+              mutation SetShippingAddress($input: CreateAddressInput!) {
+                setOrderShippingAddress(input: $input) {
+                  __typename
+                  ... on Order {
+                    id
+                    shippingAddress {
+                      streetLine1
+                      city
+                      countryCode
+                    }
+                  }
+                  ... on ErrorResult {
+                    errorCode
+                    message
+                  }
+                }
+              }
+            variables:
+              input:
+                fullName: "Test User"
+                streetLine1: "123 Test Street"
+                city: "Amsterdam"
+                postalCode: "1000 AA"
+                countryCode: "NL"
+          capture:
+            - json: "$.data.setOrderShippingAddress.id"
+              as: "orderId"
+
+      #
+      # 5. Get eligible shipping methods
+      #
+      - post:
+          url: "/shop-api"
+          json:
+            query: |
+              query GetEligibleShippingMethods {
+                eligibleShippingMethods {
+                  id
+                  name
+                  code
+                  price
+                  priceWithTax
+                }
+              }
+          capture:
+            - json: "$.data.eligibleShippingMethods[0].id"
+              as: "shippingMethodId"
+
+      #
+      # 6. Set first shipping method
+      #
+      - post:
+          url: "/shop-api"
+          json:
+            query: |
+              mutation SetShippingMethod($id: [ID!]!) {
+                setOrderShippingMethod(shippingMethodId: $id) {
+                  __typename
+                  ... on Order {
+                    id
+                    code
+                    shippingLines {
+                      shippingMethod {
+                        id
+                        name
+                        code
+                      }
+                    }
+                  }
+                  ... on ErrorResult {
+                    errorCode
+                    message
+                  }
+                }
+              }
+            variables:
+              id: "{{ shippingMethodId }}"
+          capture:
+             # Make sure we get a valid order code, that means a valid response from the API
+            - json: "$.data.setOrderShippingMethod.shippingLines[0].shippingMethod.name"
+              as: "shippingMethodName" 
