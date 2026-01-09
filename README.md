@@ -6,6 +6,8 @@ This repository is a vanilla Vendure setup to deploy Vendure with Dokploy on a V
 
 Follow the steps below to get everything up and running on your VPS of choice.
 
+![This is what the result should look like](docs/dokploy-screenshot.png)
+
 ## VPS
 
 * Create a VPS with at least 4 GB of RAM and a [supported Linux distro installed](https://docs.dokploy.com/docs/core/installation).
