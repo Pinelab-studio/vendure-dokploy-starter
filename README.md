@@ -7,6 +7,7 @@ This repository is a vanilla Vendure setup to deploy Vendure with Dokploy on a V
 Follow the steps below to get everything up and running on your VPS of choice.
 
 ![This is what the result should look like](https://raw.githubusercontent.com/Pinelab-studio/vendure-dokploy-starter/refs/heads/main/%20docs/dokploy-screenshot.png)
+*The services we will be creating in Dokploy.*
 
 ## VPS
 
