@@ -66,7 +66,7 @@ VENDURE_HOST=vendure.yourdomain.io
 
 # Local overrides -- Don't copy these variables to Dokploy, they are just for running Vendure on your local machine
 DB_HOST=12.123.12.123 # Your VPS IP address
-REDIS_HOST=34.11.11.111
+REDIS_HOST=12.123.12.123
 APP_ENV=local
 ```
 
