@@ -79,10 +79,13 @@ If all is well, you should be able to log in. This means Vendure is configured c
 
 #### Build Docker Image
 
+* Copy the deploy webhooks for Vendure and the Vendure Worker applicatiuon from your Dokploy dashboard: Go to the `Deployments` tab and copy the webhook URL.
 * Create an access token in your Docker Hub account and add set these variables as Github Action secrets in your repository:
 ```dotenv
 DOCKERHUB_USERNAME=yourusername
 DOCKERHUB_TOKEN=dckr_pat_xyz1243
+DEPLOY_WEBHOOK_VENDURE_API=https://yourdokploy.io/api/deploy/auuuxJ5dnDOiKdaDJHA
+DEPLOY_WEBHOOK_VENDURE_WORKER=https://yourdokploy.io/api/deploy/ajkldlkslKKLs
 ```
 * Go to the `Actions` tab of your repository and enable GitHub Actions.
 * Commit and push a change to the repository to trigger the Github Action that build the Docker image and push it to Docker Hub.
