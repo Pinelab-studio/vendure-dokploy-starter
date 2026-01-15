@@ -124,6 +124,14 @@ Set resource limits for each of the databases and services.
 * Set memory limit to `1073741824` (1 GB)
 * Set CPU limit to `1000000000` (1 CPU)
 
+Example limits for a 4GB 2vCPU VPS:
+| Service             | Memory Limit | CPU Limit |
+|---------------------|---------|-----------|
+| Vendure main API    | 1 GB    | None      |
+| Vendure worker      | 0.5 GB  | 1 CPU     |
+| Postgres            | 1 GB    | None      |
+| Redis               | 0.5 GB  | 1 CPU     |
+
 These are just sample values, and your values depend on the VPS and the resources you have available. **Make sure that the sum of all assigned memory never exceeds the total memory of your VPS.**
 
 ## Backups
