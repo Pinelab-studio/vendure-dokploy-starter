@@ -1,4 +1,4 @@
-[![Pinelab Logo](https://pinelab.studio/pinepas_small.png)](https://pinelab.studio)
+[![Pinelab Logo](https://pinelab.studio/pinepas_smaller.png)](https://pinelab.studio)
 
 # Vendure Dokploy Starter
 
