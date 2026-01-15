@@ -70,6 +70,7 @@ REDIS_HOST=12.123.12.123
 APP_ENV=local
 ```
 
+* Run `npm ci` to install Vendure's dependencies.
 * Run `npx vite build` to build the Vendure Dashboard.
 * Run `npm run start:server` to start the Vendure API.
 * Go to `http://localhost:3000/dashboard` to access the Vendure Dashboard.
