@@ -84,6 +84,7 @@ If all is well, you should be able to log in. This means Vendure is configured c
 DOCKERHUB_USERNAME=yourusername
 DOCKERHUB_TOKEN=dckr_pat_xyz1243
 ```
+* Go to the `Actions` tab of your repository and enable GitHub Actions.
 * Commit and push a change to the repository to trigger the Github Action that build the Docker image and push it to Docker Hub.
 * Go to Docker Hub and verify that the image has been built and pushed.
 
