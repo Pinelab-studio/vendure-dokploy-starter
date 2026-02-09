@@ -152,3 +152,22 @@ These are just sample values, and your values depend on the VPS and the resource
 
 * Use an uptime monitoring service to monitor `/health` for both the Vendure API and Worker.
 * Set up resource monitoring with your VPS provider to alert you if the total memory or CPU usage exceeds the limits you have set.
+
+### Alerting
+
+As an alternative to external VPS disk (and CPU/memory) usage checking, you can use the included `DokployHealthCheckStrategy`. It reads metrics from the Dokploy API and fails the `/health` check when thresholds are exceeded, so your uptime monitor can alert you.
+
+Add it to `systemOptions.healthChecks` in `vendure-config.ts`:
+
+```ts
+import { DokployHealthCheckStrategy } from './dokploy-health-strategy';
+
+// in systemOptions.healthChecks:
+new DokployHealthCheckStrategy({
+  maxDiskPercent: 70,
+  maxCpuPercent: 80,
+  maxMemoryPercent: 70,
+  apiKey: process.env.DOKPLOY_APIKEY,
+  dokployHost: process.env.DOKPLOY_HOST,
+}),
+```
